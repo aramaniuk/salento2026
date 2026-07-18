@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Salento Explorer 2026 — Семейный Бортовой Журнал</title>
+  <style>
+    /* Базовые стили и переменные (дизайн-токены) */
+    :root {
+      --primary: #0a3d62;
+      --primary-light: #1e3d59;
+      --accent: #e67e22;
+      --accent-light: #fef5e7;
+      --bg-sand: #fdfaf5;
+      --card-bg: #ffffff;
+      --text-dark: #2c3e50;
+      --text-muted: #7f8c8d;
+      --success: #27ae60;
+      --danger: #e74c3c;
+      --ice-blue: #e0f7fa;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-md: 0 8px 24px rgba(10,61,98,0.08);
+      --border-radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+      background-color: var(--bg-sand);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Сеточная структура приложения */
+    .app-container {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 100vh;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* Шапка дашборда */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #ffffff;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 3px solid var(--accent);
+    }
+
+    .brand h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand p {
+      font-size: 13px;
+      color: #b2bec3;
+      margin-top: 2px;
+    }
+
+    .global-stats {
+      display: flex;
+      gap: 20px;
+    }
+
+    .stat-badge {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-badge strong {
+      color: var(--accent);
+    }
+
+    /* Основная рабочая зона */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr 340px;
+      gap: 24px;
+      padding: 24px;
+      height: calc(100vh - 85px);
+      overflow: hidden;
+    }
+
+    /* Левая колонка: Навигатор по дням */
+    .sidebar-left {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      padding: 20px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border: 1px solid rgba(10, 61, 98, 0.05);
+    }
+
+    .sidebar-left h3 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding-left: 8px;
+    }
+
+    .day-button {
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .day-button:hover {
+      background: rgba(10, 61, 98, 0.03);
+    }
+
+    .day-button.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(10, 61, 98, 0.15);
+    }
+
+    .day-button .day-meta {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .day-button.active .day-meta {
+      color: var(--accent);
+    }
+
+    .day-button .day-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .day-button.active .day-title {
+      color: #ffffff;
+    }
+
+    .day-button .day-route {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .day-button.active .day-route {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Центральная колонка: Детализация дня */
+    .main-content {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-right: 4px;
+    }
+
+    .day-banner {
+      background: linear-gradient(135deg, #1e3d59 0%, #17b978 100%);
+      color: #ffffff;
+      padding: 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .day-banner-overlay {
+      position: absolute;
+      right: -20px;
+      bottom: -20px;
+      opacity: 0.1;
+      width: 180px;
+      height: 180px;
+    }
+
+    .day-banner .badge {
+      background: var(--accent);
+      color: #ffffff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .day-banner h2 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .day-banner .route-path {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Карточки контента */
+    .section-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(10, 61, 98, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: var(--transition);
+    }
+
+    .section-card:hover {
+      box-shadow: 0 10px 30px rgba(10, 61, 98, 0.05);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid rgba(10, 61, 98, 0.04);
+      padding-bottom: 12px;
+    }
+
+    .card-icon {
+      background: var(--accent-light);
+      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .card-icon.blue {
+      background: var(--ice-blue);
+      color: var(--primary);
+    }
+
+    .card-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .card-body p {
+      color: var(--text-dark);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Оформление квеста штурмана */
+    .quest-box {
+      background: linear-gradient(135deg, #fffcf6 0%, #fff7eb 100%);
+      border-left: 5px solid var(--accent);
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    /* Оформление климатического убежища */
+    .shelter-box {
+      background: linear-gradient(135deg, #f4fcfe 0%, #e8f8fc 100%);
+      border-left: 5px solid #00bcd4;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    /* Правая колонка: Статистика и Логистика */
+    .sidebar-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .widget {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(10, 61, 98, 0.04);
+    }
+
+    .widget-title {
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(10, 61, 98, 0.05);
+      padding-bottom: 10px;
+    }
+
+    /* Виджет прогресса штурмана */
+    .progress-widget {
+      text-align: center;
+    }
+
+    .progress-circle-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 15px auto;
+    }
+
+    .progress-circle {
+      transform: rotate(-90deg);
+    }
+
+    .progress-bg {
+      fill: none;
+      stroke: #f1f2f6;
+      stroke-width: 10;
+    }
+
+    .progress-bar {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-dasharray: 314;
+      stroke-dashoffset: 285; /* Изменяется в JS */
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    /* Виджет логистики */
+    .logistics-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .logistics-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+    }
+
+    .logistics-item-icon {
+      color: var(--accent);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .logistics-item-content strong {
+      display: block;
+      color: var(--text-dark);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .logistics-item-content span {
+      color: var(--text-muted);
+      font-size: 13.5px;
+    }
+
+    .ztl-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    .ztl-no {
+      background-color: rgba(39, 174, 96, 0.1);
+      color: var(--success);
+    }
+
+    .ztl-yes {
+      background-color: rgba(231, 76, 60, 0.1);
+      color: var(--danger);
+    }
+
+    /* Совет дня */
+    .tip-content {
+      font-size: 13.5px;
+      font-style: italic;
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    /* Анимация переключения контента */
+    .fade-in {
+      animation: fadeInUp 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Адаптивный дизайн (Mobile First) */
+    @media (max-width: 1024px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr;
+        height: auto;
+        overflow: visible;
+        padding: 16px;
+        gap: 16px;
+      }
+
+      header {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .global-stats {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      /* Левая колонка превращается в горизонтальную ленту */
+      .sidebar-left {
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px;
+        border-radius: 12px;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+      }
+
+      .sidebar-left h3 {
+        display: none;
+      }
+
+      .day-button {
+        flex: 0 0 140px;
+        padding: 10px;
+        scroll-snap-align: start;
+      }
+
+      .day-button .day-title {
+        font-size: 12px;
+      }
+
+      .sidebar-right {
+        order: 3;
+      }
+    }
+
+    @media (min-width: 1025px) {
+      /* Кастомные полосы прокрутки для десктопа */
+      .sidebar-left::-webkit-scrollbar,
+      .main-content::-webkit-scrollbar,
+      .sidebar-right::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .sidebar-left::-webkit-scrollbar-track,
+      .main-content::-webkit-scrollbar-track,
+      .sidebar-right::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .sidebar-left::-webkit-scrollbar-thumb,
+      .main-content::-webkit-scrollbar-thumb,
+      .sidebar-right::-webkit-scrollbar-thumb {
+        background: rgba(10, 61, 98, 0.1);
+        border-radius: 3px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Шапка дашборда -->
+  <header>
+    <div class="brand">
+      <h1>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        Salento Explorer 2026
+      </h1>
+      <p>Интерактивный научно-туристический журнал для семейной команды</p>
+    </div>
+    <div class="global-stats">
+      <div class="stat-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Период: <strong>21 - 31 июля</strong>
+      </div>
+      <div class="stat-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Возраст: <strong>11-летний штурман</strong>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-layout">
+    <!-- Левая колонка: Карусель/Список дней -->
+    <aside class="sidebar-left" id="daysMenu">
+      <h3>План экспедиции</h3>
+      <!-- Заполняется динамически через JS -->
+    </aside>
+
+    <!-- Центр: Детализация активного дня -->
+    <main class="main-content" id="mainContent">
+      <!-- Баннер дня -->
+      <div class="day-banner" id="dayBanner">
+        <div class="badge" id="dayBadge">ДЕНЬ 1</div>
+        <h2 id="dayTitle">Загрузка данных...</h2>
+        <div class="route-path">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect cx="3" cy="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+          <span id="dayRoute">Бари → Салиньяно</span>
+        </div>
+        <!-- Красивый фоновый знак компаса -->
+        <svg class="day-banner-overlay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+        </svg>
+      </div>
+
+      <!-- Карточка 1: Главная цель -->
+      <div class="section-card fade-in">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <h3>Главная цель дня</h3>
+        </div>
+        <div class="card-body">
+          <p id="dayObjective">Описание главной цели...</p>
+        </div>
+      </div>
+
+      <!-- Карточка 2: Квест Штурмана -->
+      <div class="section-card quest-box fade-in">
+        <div class="card-header">
+          <div class="card-icon" style="background-color: rgba(230, 126, 34, 0.12);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          </div>
+          <h3>Миссия штурмана 🧭</h3>
+        </div>
+        <div class="card-body">
+          <p id="dayQuest" style="font-weight: 500; color: #d35400;">Научно-техническая задача дня...</p>
+        </div>
+      </div>
+
+      <!-- Карточка 3: Климатическое убежище -->
+      <div class="section-card shelter-box fade-in">
+        <div class="card-header">
+          <div class="card-icon blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3>Убежище от зноя (12:30 - 17:00) ❄️</h3>
+        </div>
+        <div class="card-body">
+          <p id="dayShelter">Где спасаться от летней жары в $+35^\circ\text{C}$...</p>
+        </div>
+      </div>
+
+      <!-- Карточка 4: Гастрономическое открытие -->
+      <div class="section-card fade-in">
+        <div class="card-header">
+          <div class="card-icon" style="background: rgba(46, 204, 113, 0.1); color: var(--success);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3>Гастрономия дня 🍕</h3>
+        </div>
+        <div class="card-body">
+          <p id="dayGastronomy">Кулинарное знакомство с Саленто...</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Правая колонка: Прогресс & Логистика -->
+    <aside class="sidebar-right">
+      <!-- Виджет Прогресса -->
+      <div class="widget progress-widget">
+        <div class="widget-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Открытия штурмана
+        </div>
+        <div class="progress-circle-container">
+          <svg class="progress-circle" width="120" height="120">
+            <circle class="progress-bg" cx="60" cy="60" r="50"></circle>
+            <circle id="progressBar" class="progress-bar" cx="60" cy="60" r="50"></circle>
+          </svg>
+          <div class="progress-text" id="progressText">9%</div>
+        </div>
+        <div class="progress-label">Уровень научного анализа региона</div>
+      </div>
+
+      <!-- Виджет Логистики -->
+      <div class="widget">
+        <div class="widget-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect cx="1" cy="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Карта и логистика 🚗
+        </div>
+        <div class="logistics-list">
+          <div class="logistics-item">
+            <div class="logistics-item-icon">📍</div>
+            <div class="logistics-item-content">
+              <strong>Дистанция от Лечче</strong>
+              <span id="logDistance">~220 км</span>
+            </div>
+          </div>
+          <div class="logistics-item">
+            <div class="logistics-item-icon">⏱️</div>
+            <div class="logistics-item-content">
+              <strong>Время в пути</strong>
+              <span id="logTime">2.5 часа</span>
+            </div>
+          </div>
+          <div class="logistics-item">
+            <div class="logistics-item-icon">🛑</div>
+            <div class="logistics-item-content">
+              <strong>Ограничения ZTL</strong>
+              <span id="logZtl" class="ztl-badge ztl-no">Нет данных</span>
+            </div>
+          </div>
+          <div class="logistics-item">
+            <div class="logistics-item-icon">🅿️</div>
+            <div class="logistics-item-content">
+              <strong>Рекомендация по парковке</strong>
+              <span id="logParking">Загрузка координат...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Виджет Секрета дня -->
+      <div class="widget" style="background-color: var(--accent-light); border-color: rgba(230, 126, 34, 0.15);">
+        <div class="widget-title" style="color: var(--accent);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Совет штурмана
+        </div>
+        <p class="tip-content" id="dayTip">Загрузка важной информации...</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  // Насыщенная база данных экспедиции (21 - 31 июля 2026)
+  const daysData = [
+    {
+      id: 21,
+      date: "21 июля",
+      dayOfWeek: "Вторник",
+      title: "Адаптация & Джаз",
+      route: "Бари → Салиньяно",
+      progress: 9,
+      badge: "День 1",
+      colorGradient: "linear-gradient(135deg, #1e3d59 0%, #17b978 100%)",
+      objective: "Комфортный трансфер из аэропорта Бари в Лечче, обустройство в семейных апартаментах. Поздний вечерний выезд в Салиньяно на атмосферный Confimare Music Fest прямо у подножия башни Торре дель Рипаро.",
+      navigatorQuest: "Задание штурману: Исследовать физику отражения звуковых волн от шероховатой известняковой кладки оборонительной башни XVI века. С помощью смартфона-диктофона определи, как форма башни и ее структура влияют на распространение звуков джазового оркестра под открытым небом.",
+      climateShelter: "Днем температура за бортом превышает $+35^\circ\text{C}$! Рекомендовано оставаться в кондиционируемом пространстве отеля/апартаментов до 17:00, адаптируясь к климату Южной Италии.",
+      gastronomy: "Пирог Питта ди патате (Pitta di patate) — нежный запеченный картофельный пирог с ароматным соусом из лука, томатов, оливок, каперсов и пряных трав Саленто.",
+      logistics: {
+        distance: "~220 км (из Бари)",
+        time: "~2.5 часа",
+        ztl: "Без ZTL",
+        ztlClass: "ztl-no",
+        parking: "Бесплатная муниципальная парковка прямо у подножия башни Торре дель Рипаро (Salignano)."
+      },
+      tip: "Убедитесь, что арендный автомобиль снабжен полным баком воды, а кондиционер настроен на $+23^\circ\text{C}$ для защиты подростка от перепада температур при выходе наружу."
+    },
+    {
+      id: 22,
+      date: "22 июля",
+      dayOfWeek: "Среда",
+      title: "Гражданская наука & Дельфины",
+      route: "Лечче → Таранто → Удженто",
+      progress: 18,
+      badge: "День 2",
+      colorGradient: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+      objective: "Уникальная 5-часовая морская экспедиция с морскими биологами из Jonian Dolphin Conservation на исследовательском катамаране. Мониторинг китообразных Ионического моря и посещение инновационного виртуального музея Ketos.",
+      navigatorQuest: "Задание штурману: Запишите с помощью научного гидрофона «свист-автограф» встреченного серого дельфина и попробуйте на мониторе исследовательской станции сопоставить спектрограмму звука с каталогом видов.",
+      climateShelter: "Вы будете укрыты тентом катамарана и окружены морским бризом. Во второй половине дня (после 13:00) отправляйтесь в кондиционированные залы музея Ketos в Таранто.",
+      gastronomy: "Посещение Sagra della Puccia в Удженто. Попробуйте пуччу — круглый салентийский хлеб с оливками, выпекаемый в дровяной печи, с начинкой из сочных местных сыров и кабачков.",
+      logistics: {
+        distance: "105 км (в Таранто)",
+        time: "~1 час 15 минут по SS7",
+        ztl: "ZTL Активна!",
+        ztlClass: "ztl-yes",
+        parking: "Паркуйтесь за пределами исторического центра Таранто на охраняемом причале Molo Sant'Eligio."
+      },
+      tip: "Для защиты от солнца на море используйте экологически чистые кремы высокой степени защиты, которые не вредят микробиоте Ионического моря."
+    },
+    {
+      id: 23,
+      date: "23 июля",
+      dayOfWeek: "Четверг",
+      title: "Астрофизика & Море",
+      route: "Лечче → Касарано → Галлиполи",
+      progress: 27,
+      badge: "День 3",
+      colorGradient: "linear-gradient(135deg, #0575e6 0%, #00f260 100%)",
+      objective: "Интерактивная научная программа в Астрономическом парке Сан-Лоренцо в Касарано: Музей космонавтики, полнокупольный 3D-планетарий и вечерние наблюдения в мощнейшие оптические телескопы.",
+      navigatorQuest: "Задание штурману: Сравните под бинокулярным микроскопом структуру железного метеорита (сидерита) и земного базальта. Определите разницу плотности и массы внеземного и земного вещества одинакового объема.",
+      climateShelter: "Днем отправляйтесь на побережье Галлиполи для купания в карстовых бухтах, а с 16:00 перейдите в прохладную зону интерактивных экспозиций Астрономического парка.",
+      gastronomy: "На старинном рыбном рынке Галлиполи попробуйте свежайшие сырые красные креветки (Gamberi Rossi di Gallipoli) с капелькой лимонного сока.",
+      logistics: {
+        distance: "48 км",
+        time: "~40 минут по SS101",
+        ztl: "Без ZTL",
+        ztlClass: "ztl-no",
+        parking: "Собственная парковка научно-просветительского центра Астропарка Сан-Лоренцо."
+      },
+      tip: "Ночные сеансы у телескопов начинаются после 20:00 в ясную погоду. Привезите с собой ветровку, на карстовом плато ночью бывает свежо."
+    },
+    {
+      id: 24,
+      date: "24 июля",
+      dayOfWeek: "Пятница",
+      title: "Гранд-Шоу & Монументы",
+      route: "Лечче → С. М. ди Леука → Остуни",
+      progress: 36,
+      badge: "День 4",
+      colorGradient: "linear-gradient(135deg, #f12711 0%, #f5af19 100%)",
+      objective: "Запуск 40-метрового Монументального Водопада (Cascata Monumentale) в Санта-Мария-ди-Леука (в 19:30). Вечером — долгожданный праздничный концерт Джона Ледженда на Locus Festival в Остуни.",
+      navigatorQuest: "Задание штурману: Разгадайте гидродинамический принцип сообщающихся сосудов великого Апулийского акведука, который доставил пресную воду на край Саленто через сотни километров без использования электронасосов.",
+      climateShelter: "Днем укройтесь в тенистых барочных двориках Белого города (Остуни) или проведите время в тени сосен побережья перед вечерним шоу.",
+      gastronomy: "Остунийская фокачча с печеными черри-томатами и локальным сыром Страчателла.",
+      logistics: {
+        distance: "80 км до Леуки",
+        time: "~1 час 10 минут",
+        ztl: "Очень строгий ZTL",
+        ztlClass: "ztl-yes",
+        parking: "Оставьте авто в Остуни на большой парковке Parcheggio Via G. Pinto. Внутренний город закрыт для проезда!"
+      },
+      tip: "В Остуни огромный наплыв гостей перед фестивалем Locus. Приезжайте до 18:00, чтобы занять парковочное место без стресса."
+    },
+    {
+      id: 25,
+      date: "25 июля",
+      dayOfWeek: "Суббота",
+      title: "Световые Фракталы",
+      route: "Лечче → Галлиполи → Курси",
+      progress: 45,
+      badge: "День 5",
+      colorGradient: "linear-gradient(135deg, #aa076b 0%, #61045f 100%)",
+      objective: "Масштабный праздник Festa di Santa Cristina в Галлиполи с красивейшей морской процессией и зажиганием фрактальной иллюминации (Luminarie). Поздний ужин на празднике Sagra del Pane в Курси.",
+      navigatorQuest: "Задание штурману: Оцените инженерное решение Luminarie: как решетчатая деревянная структура арок и использование фрактальной геометрии позволяют огромным светящимся башням выдерживать сильные порывы ветра на набережной.",
+      climateShelter: "В разгар жары посетите экспозиции замка Карла V в Лечче с его мощными прохладными каменными сводами или пройдитесь по затененным улочкам.",
+      gastronomy: "Хлеб из муки твердых сортов Grano Duro с оливковым маслом первого отжима на празднике Sagra del Pane в Курси.",
+      logistics: {
+        distance: "40 км",
+        time: "~35 минут по SS101",
+        ztl: "Ограничен въезд",
+        ztlClass: "ztl-yes",
+        parking: "Оставьте автомобиль на парковке у порта Галлиполи (Porto di Gallipoli) и перейдите мост пешком."
+      },
+      tip: "Морская процессия начинается около 18:30. Лучший вид на лодки святой Кристины открывается со стен старого города."
+    },
+    {
+      id: 26,
+      date: "26 июля",
+      dayOfWeek: "Воскресенье",
+      title: "Древние Оливы",
+      route: "Лечче → Остуни (Masseria Brancati)",
+      progress: 54,
+      badge: "День 6",
+      colorGradient: "linear-gradient(135deg, #134e5e 0%, #71b280 100%)",
+      objective: "Посещение исторической укрепленной усадьбы Masseria Brancati. Экскурсия по роще тысячелетних оливковых деревьев, посаженных еще римлянами, и спуск в древнюю подземную маслобойню (frantoio ipogeo).",
+      navigatorQuest: "Задание штурману: Объясни, почему древние мессапы и римляне выдалбливали свои маслобойни глубоко под землей в известняке? Как постоянная температура в $+18^\circ\text{C}$ спасала драгоценное оливковое масло от окисления и порчи?",
+      climateShelter: "Подземная маслобойня frantoio ipogeo — идеальное природное укрытие. Там всегда царит естественная прохлада $+18^\circ\text{C}$ даже при уличной жаре $+38^\circ\text{C}$!",
+      gastronomy: "Профессиональная дегустация моносортовых оливковых масел Extra Virgin с хрустящими апулийскими бубликами — таралли.",
+      logistics: {
+        distance: "78 км от Лечче",
+        time: "~55 минут по SS613",
+        ztl: "Без ZTL",
+        ztlClass: "ztl-no",
+        parking: "Удобная бесплатная парковка непосредственно на территории усадьбы Masseria Brancati."
+      },
+      tip: "Обязательно забронируйте визит на массерию заранее за 1 день. Попросите штурмана посчитать возраст самого широкого оливкового дерева по обхвату ствола!"
+    },
+    {
+      id: 27,
+      date: "27 июля",
+      dayOfWeek: "Понедельник",
+      title: "Индустриальная Физика",
+      route: "Лечче → Малье → Гротталье",
+      progress: 63,
+      badge: "День 7",
+      colorGradient: "linear-gradient(135deg, #4b6cb7 0%, #182848 100%)",
+      objective: "Технический визит на легендарную фабрику пасты Pastificio Benedetto Cavalieri (основана в 1918 г.) и Музей шоколада Maglio в Малье. Вечером — драйвовый Cinzella Festival в известняковом карьере Фантиано.",
+      navigatorQuest: "Задание штурману: Изучите бронзовые матрицы фабрики Cavalieri. Почему паста, выдавленная через бронзу (а не тефлон), получается матовой и шершавой? Каковы физические силы сцепления соуса с такой поверхностью пасты?",
+      climateShelter: "Кондиционируемые цеха шоколадного производства Maglio и экскурсия по закрытому заводу пасты Cavalieri сэкономят силы в самый жаркий период дня.",
+      gastronomy: "Паста «Ruote Pazze» (Безумные колеса) от Кавальери, приготовленная методом деликатной низкотемпературной сушки, с традиционным томатным соусом.",
+      logistics: {
+        distance: "30 км",
+        time: "~25 минут по SS16",
+        ztl: "Без ZTL",
+        ztlClass: "ztl-no",
+        parking: "Парковка на улицах Малье за пределами синей зоны или у ворот фабрики Cavalieri."
+      },
+      tip: "Для визита на Pastificio Cavalieri требуется строгое предварительное согласование по телефону +39 0836.483620. Обязательно соблюдайте санитарные правила на фабрике."
+    },
+    {
+      id: 28,
+      date: "28 июля",
+      dayOfWeek: "Вторник",
+      title: "Антропология Пасленовых",
+      route: "Лечче → Кастри → Мартина-Франка",
+      progress: 72,
+      badge: "День 8",
+      colorGradient: "linear-gradient(135deg, #e65c00 0%, #f9d423 100%)",
+      objective: "Участие в аутентичном фестивале баклажана Marangiane in Festa в Кастри-ди-Лечче. Альтернатива — утонченный вечер классической оперы во дворе Герцогского дворца в Мартина-Франка на Festival della Valle d'Itria.",
+      navigatorQuest: "Задание штурману: Разберитесь в химическом процессе осмоса: почему посыпание нарезанных баклажанов крупной солью перед жаркой заставляет их выделять влагу и избавляет мякоть от горького алкалоида соланина?",
+      climateShelter: "В дневное время посетите великолепный залы Palazzo Ducale в Мартина-Франка — его толстые каменные барочные стены отлично держат прохладу.",
+      gastronomy: "Баклажанная запеканка Пармиджана (Parmigiana di melanzane) с тягучей моцареллой и базиликом, а также необычный десерт — шоколадный баклажан.",
+      logistics: {
+        distance: "15 км до Кастри",
+        time: "~20 минут по SP1",
+        ztl: "Без ZTL в Кастри",
+        ztlClass: "ztl-no",
+        parking: "В Кастри паркуйтесь на въезде в город у муниципальной спортивной площадки."
+      },
+      tip: "Если выберете оперный фестиваль в Мартина-Франка — помните о вечернем дресс-коде (Smart Casual), штурману будет приятно почувствовать себя взрослым зрителем."
+    },
+    {
+      id: 29,
+      date: "29 июля",
+      dayOfWeek: "Среда",
+      title: "Карст & Папье-Маше",
+      route: "Лечче → Кастеллана-Гротте",
+      progress: 81,
+      badge: "День 9",
+      colorGradient: "linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)",
+      objective: "Большой спуск в гигантские карстовые пещеры Гротте-ди-Кастеллана (глубина до 70 м). Вечером — творческий мастер-класс по барочному ремеслу папье-маше (Cartapesta) в семейной студии Марко Эпикочи в Лечче.",
+      navigatorQuest: "Задание штурману: В XVII веке мастера Лечче изобрели дешевый способ имитации мрамора. Почему в клей из пшеничной муки грубого помола для создания статуй обязательно добавляли медный купорос? От каких вредителей это спасало хрупкую бумагу?",
+      climateShelter: "Абсолютный чемпион по климатической защите! В глубине пещер Гротте-ди-Кастеллана круглый год держится стабильная комфортная температура всего $+14\dots+18^\circ\text{C}$!",
+      gastronomy: "Сладкие традиционные пирожные пастиччотто (Pasticciotto Leccese) со сливочным заварным кремом, купленные в исторической кондитерской в Лечче.",
+      logistics: {
+        distance: "115 км до пещер",
+        time: "~1 час 25 минут по SS16",
+        ztl: "В Лечче строгая ZTL",
+        ztlClass: "ztl-yes",
+        parking: "Оставьте авто на перехватывающей парковке Лечче Parcheggio Foro Boario и передвигайтесь по старому городу пешком."
+      },
+      tip: "Для посещения пещер обязательно возьмите с собой легкие свитеры или кофты. После $+36^\circ\text{C}$ наверху, прохлада пещеры ощущается очень контрастно!"
+    },
+    {
+      id: 30,
+      date: "30 июля",
+      dayOfWeek: "Четверг",
+      title: "Экология & Секреты Нардо",
+      route: "Лечче → Нардо (Портосельваджо)",
+      progress: 90,
+      badge: "День 10",
+      colorGradient: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
+      objective: "Прогулка по заповедным аллеям приморской сосны в парке Портосельваджо. Купание в лагуне с пресными холодными ключами. Вечерняя экскурсия в Castello Volante в Корильяно-д'Отранто.",
+      navigatorQuest: "Задание штурману: Исследуйте гидрологическое явление: почему в бухте Портосельваджо ледяная пресная вода из подземных карстовых ключей течет по самой поверхности моря, не смешиваясь мгновенно со сравнительно теплой соленой водой?",
+      climateShelter: "Густая тень вековых сосен парка Портосельваджо, высаженных в XX веке для восстановления почвы, и купание в прохладных ключах отлично спасают от зноя.",
+      gastronomy: "Пикантные апулийские фрикадельки Polpette со специями в соусе суго в траттории Нардо.",
+      logistics: {
+        distance: "38 км",
+        time: "~35 минут по SS101",
+        ztl: "Без ZTL в парке",
+        ztlClass: "ztl-no",
+        parking: "Бесплатная стоянка Masseria Torrenova, откуда начинается пеший экологический маршрут к морю."
+      },
+      tip: "⚠️ Внимание штурмана! Испытательный трек Porsche в Нардо (Nardò Technical Center) — строго засекреченный военный и коммерческий объект, закрытый для туристов. Не пытайтесь заехать туда на машине!"
+    },
+    {
+      id: 31,
+      date: "31 июля",
+      dayOfWeek: "Пятница",
+      title: "Золотой Финал",
+      route: "Лечче → Акуарика-дель-Капо",
+      progress: 100,
+      badge: "День 11",
+      colorGradient: "linear-gradient(135deg, #f39c12 0%, #d35400 100%)",
+      objective: "Яркое финальное участие в историческом празднике Festa del Grano в усадьбе Celsorizzo. Реконструкция традиционного ручного обмолота пшеницы твердых сортов Grano Duro с помощью волов.",
+      navigatorQuest: "Задание штурману: Изучите структуру зерна твердой пшеницы. Какую роль играет белок глютен в создании упругой текстуры теста и почему именно паста из Grano Duro идеально сохраняет форму «al dente» при варке?",
+      climateShelter: "Днем спрячьтесь в теневых арочных коридорах массерии Celsorizzo, разглядывая доиндустриальные сельскохозяйственные инструменты в экспозиции.",
+      gastronomy: "Самостоятельное приготовление традиционного сухого бублика Фризедда (Frisedda) — его размачивают в чистой воде, сдабривают томатами, солью и оливковым маслом.",
+      logistics: {
+        distance: "60 км от Лечче",
+        time: "~50 минут по SS101",
+        ztl: "Без ZTL",
+        ztlClass: "ztl-no",
+        parking: "Парковка на грунтовой площадке у Masseria Celsorizzo."
+      },
+      tip: "Это финал экспедиции! Поздравьте штурмана с успешным освоением $100\%$ научных тайн Саленто и вручите ему памятный сувенир из мастерской Cartapesta!"
+    }
+  ];
+
+  let currentActiveIndex = 0;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let touchStartY = 0;
+  let touchEndY = 0;
+
+  // Инициализация меню дней
+  function initDaysMenu() {
+    const menuContainer = document.getElementById('daysMenu');
+    // Очищаем, оставляя только заголовок
+    menuContainer.innerHTML = '<h3>План экспедиции</h3>';
+
+    daysData.forEach((day, index) => {
+      const button = document.createElement('button');
+      button.className = `day-button ${index === currentActiveIndex ? 'active' : ''}`;
+      button.id = `btn-day-${index}`;
+      button.onclick = () => selectDay(index);
+
+      button.innerHTML = `
+        <span class="day-meta">${day.date}</span>
+        <span class="day-title">${day.title}</span>
+        <span class="day-route">${day.dayOfWeek}</span>
+      `;
+      menuContainer.appendChild(button);
+    });
+  }
+
+  // Функция переключения активного дня
+  function selectDay(index) {
+    if (index < 0 || index >= daysData.length) return;
+
+    // Снимаем класс active со старой кнопки
+    document.getElementById(`btn-day-${currentActiveIndex}`).classList.remove('active');
+    
+    currentActiveIndex = index;
+    
+    // Добавляем класс active на новую кнопку
+    const activeBtn = document.getElementById(`btn-day-${currentActiveIndex}`);
+    activeBtn.classList.add('active');
+
+    // Автоматическая прокрутка меню на мобильных устройствах
+    if (window.innerWidth <= 1024) {
+      activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
+    // Обновляем контент с анимацией
+    const mainContent = document.getElementById('mainContent');
+    mainContent.style.opacity = 0;
+
+    setTimeout(() => {
+      const data = daysData[index];
+
+      // Текстовые блоки
+      document.getElementById('dayBadge').innerText = data.badge;
+      document.getElementById('dayTitle').innerText = data.title;
+      document.getElementById('dayRoute').innerText = data.route;
+      document.getElementById('dayObjective').innerText = data.objective;
+      document.getElementById('dayQuest').innerText = data.navigatorQuest;
+      document.getElementById('dayShelter').innerText = data.climateShelter;
+      document.getElementById('dayGastronomy').innerText = data.gastronomy;
+      document.getElementById('dayTip').innerText = data.tip;
+
+      // Изменение градиента баннера
+      document.getElementById('dayBanner').style.background = data.colorGradient;
+
+      // Обновление логистики
+      document.getElementById('logDistance').innerText = data.logistics.distance;
+      document.getElementById('logTime').innerText = data.logistics.time;
+      
+      const ztlEl = document.getElementById('logZtl');
+      ztlEl.innerText = data.logistics.ztl;
+      ztlEl.className = `ztl-badge ${data.logistics.ztlClass}`;
+      
+      document.getElementById('logParking').innerText = data.logistics.parking;
+
+      // Обновление прогресс-бара
+      updateProgress(data.progress);
+
+      // Плавно возвращаем видимость контенту
+      mainContent.style.opacity = 1;
+      mainContent.classList.add('fade-in');
+      setTimeout(() => mainContent.classList.remove('fade-in'), 350);
+
+    }, 150);
+  }
+
+  // Обновление кругового прогресс-бара
+  function updateProgress(percent) {
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
+    // Длина окружности с радиусом 50 равна 2 * PI * r = 314
+    const circumference = 314;
+    const offset = circumference - (percent / 100) * circumference;
+    
+    progressBar.style.strokeDashoffset = offset;
+    progressText.innerText = `${percent}%`;
+  }
+
+  // Настройка свайпов для сенсорных экранов
+  function setupSwipeGestures() {
+    const mainArea = document.getElementById('mainContent');
+
+    mainArea.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    mainArea.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      handleSwipe();
+    }, { passive: true });
+  }
+
+  function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    const threshold = 60; // минимальное расстояние для свайпа в пикселях
+
+    // Защита от случайных срабатываний во время вертикальной прокрутки
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > threshold) {
+      if (deltaX < 0) {
+        // Свайп влево -> следующий день
+        if (currentActiveIndex < daysData.length - 1) {
+          selectDay(currentActiveIndex + 1);
+        }
+      } else {
+        // Свайп вправо -> предыдущий день
+        if (currentActiveIndex > 0) {
+          selectDay(currentActiveIndex - 1);
+        }
+      }
+    }
+  }
+
+  // Точка входа при загрузке документа
+  window.onload = function() {
+    initDaysMenu();
+    selectDay(0);
+    setupSwipeGestures();
+  };
+</script>
+
+</body>
+</html>
