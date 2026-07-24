@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Salento Explorer 2026 — Бортовой Журнал Романюк & Чайко</title>
+  <title>Salento Explorer 2026 — Бортовой Журнал Экспедиции</title>
   <style>
     :root {
       --primary: #0a3d62;
@@ -38,7 +38,6 @@
       overflow-x: hidden;
     }
 
-    /* Сеточная структура приложения */
     .app-container {
       display: grid;
       grid-template-rows: auto 1fr;
@@ -50,7 +49,7 @@
     header {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       color: #ffffff;
-      padding: 20px 30px;
+      padding: 18px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -69,21 +68,22 @@
     }
 
     .brand p {
-      font-size: 13px;
+      font-size: 12.5px;
       color: #b2bec3;
       margin-top: 2px;
     }
 
     .global-stats {
       display: flex;
-      gap: 15px;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     .stat-badge {
       background: rgba(255, 255, 255, 0.1);
-      padding: 8px 14px;
+      padding: 6px 14px;
       border-radius: 30px;
-      font-size: 12px;
+      font-size: 12.5px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -94,22 +94,21 @@
       color: var(--accent);
     }
 
-    /* Основная рабочая зона */
     .dashboard-layout {
       display: grid;
-      grid-template-columns: 280px 1fr 340px;
-      gap: 24px;
-      padding: 24px;
+      grid-template-columns: 290px 1fr 340px;
+      gap: 20px;
+      padding: 20px;
       height: calc(100vh - 85px);
       overflow: hidden;
     }
 
-    /* Левая колонка: Хронологическое меню */
+    /* Левая колонка: Навигатор по дням */
     .sidebar-left {
       background: var(--card-bg);
       border-radius: var(--border-radius);
       box-shadow: var(--shadow-sm);
-      padding: 20px 16px;
+      padding: 16px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -122,39 +121,42 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--text-muted);
-      margin-bottom: 10px;
-      padding-left: 8px;
+      margin-bottom: 8px;
+      padding-left: 6px;
     }
 
     .day-button {
       background: none;
       border: 1px solid transparent;
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 10px 14px;
       text-align: left;
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       transition: var(--transition);
       width: 100%;
     }
 
     .day-button:hover {
-      background: rgba(10, 61, 98, 0.03);
+      background: rgba(10, 61, 98, 0.04);
     }
 
     .day-button.active {
       background: var(--primary);
       border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(10, 61, 98, 0.15);
+      box-shadow: 0 4px 14px rgba(10, 61, 98, 0.18);
     }
 
     .day-button .day-meta {
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       color: var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .day-button.active .day-meta {
@@ -162,7 +164,7 @@
     }
 
     .day-button .day-title {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
       color: var(--text-dark);
       white-space: nowrap;
@@ -175,27 +177,36 @@
     }
 
     .day-button .day-route {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--text-muted);
     }
 
     .day-button.active .day-route {
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .today-tag {
+      background: var(--accent);
+      color: #fff;
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      font-weight: 800;
     }
 
     .main-content {
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
       padding-right: 4px;
     }
 
-    /* Баннер дня */
     .day-banner {
       background: linear-gradient(135deg, #1e3d59 0%, #17b978 100%);
       color: #ffffff;
-      padding: 24px;
+      padding: 22px;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow-md);
       position: relative;
@@ -220,86 +231,84 @@
       font-weight: 700;
       text-transform: uppercase;
       display: inline-block;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .day-banner h2 {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 800;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .day-banner .route-path {
-      font-size: 15px;
+      font-size: 14px;
       color: rgba(255, 255, 255, 0.9);
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .day-media-card {
-      position: relative;
-      background: var(--card-bg);
+    .day-image-container {
+      width: 100%;
+      height: 220px;
       border-radius: var(--border-radius);
       overflow: hidden;
+      position: relative;
       box-shadow: var(--shadow-sm);
-      border: 1px solid rgba(10, 61, 98, 0.05);
     }
 
-    .day-photo {
+    .day-image {
       width: 100%;
-      height: 280px;
+      height: 100%;
       object-fit: cover;
-      display: block;
       transition: transform 0.5s ease;
     }
 
-    .day-media-card:hover .day-photo {
-      transform: scale(1.02);
+    .day-image-container:hover .day-image {
+      transform: scale(1.03);
     }
 
-    .day-photo-caption {
+    .day-image-caption {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
       color: #ffffff;
-      padding: 20px 15px 10px;
-      font-size: 14px;
+      padding: 12px 16px;
+      font-size: 12.5px;
       font-weight: 500;
     }
 
-    /* Карточки контента */
     .section-card {
       background: var(--card-bg);
       border-radius: var(--border-radius);
-      padding: 24px;
+      padding: 20px;
       box-shadow: var(--shadow-sm);
       border: 1px solid rgba(10, 61, 98, 0.04);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       transition: var(--transition);
     }
 
     .section-card:hover {
-      box-shadow: 0 10px 30px rgba(10, 61, 98, 0.05);
+      box-shadow: 0 8px 24px rgba(10, 61, 98, 0.05);
     }
 
     .card-header {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       border-bottom: 2px solid rgba(10, 61, 98, 0.04);
-      padding-bottom: 12px;
+      padding-bottom: 10px;
     }
 
     .card-icon {
       background: var(--accent-light);
       border-radius: 10px;
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -313,22 +322,43 @@
     }
 
     .card-header h3 {
-      font-size: 18px;
+      font-size: 16.5px;
       font-weight: 700;
       color: var(--primary);
     }
 
     .card-body p {
       color: var(--text-dark);
-      font-size: 15px;
+      font-size: 14.5px;
       line-height: 1.6;
     }
 
-    /* Декоративные подложки для специализированных блоков */
     .quest-box {
       background: linear-gradient(135deg, #fffcf6 0%, #fff7eb 100%);
       border-left: 5px solid var(--accent);
       border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    .quest-item {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed rgba(230, 126, 34, 0.2);
+    }
+
+    .quest-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .quest-role {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
     }
 
     .shelter-box {
@@ -340,29 +370,29 @@
     .sidebar-right {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
       overflow-y: auto;
     }
 
     .widget {
       background: var(--card-bg);
       border-radius: var(--border-radius);
-      padding: 20px;
+      padding: 18px;
       box-shadow: var(--shadow-sm);
       border: 1px solid rgba(10, 61, 98, 0.04);
     }
 
     .widget-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       text-transform: uppercase;
       color: var(--primary);
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       border-bottom: 1px solid rgba(10, 61, 98, 0.05);
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
 
     .progress-widget {
@@ -371,9 +401,9 @@
 
     .progress-circle-container {
       position: relative;
-      width: 120px;
-      height: 120px;
-      margin: 15px auto;
+      width: 110px;
+      height: 110px;
+      margin: 12px auto;
     }
 
     .progress-circle {
@@ -401,29 +431,28 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
       color: var(--primary);
     }
 
     .progress-label {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--text-muted);
-      margin-top: 10px;
+      margin-top: 6px;
     }
 
-    /* Виджет логистики */
     .logistics-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .logistics-item {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: flex-start;
-      font-size: 14px;
+      font-size: 13.5px;
     }
 
     .logistics-item-icon {
@@ -435,13 +464,13 @@
     .logistics-item-content strong {
       display: block;
       color: var(--text-dark);
-      font-size: 12px;
+      font-size: 11.5px;
       text-transform: uppercase;
     }
 
     .logistics-item-content span {
       color: var(--text-muted);
-      font-size: 13.5px;
+      font-size: 13px;
     }
 
     .ztl-badge {
@@ -449,7 +478,7 @@
       padding: 2px 8px;
       border-radius: 4px;
       font-weight: 700;
-      font-size: 11px;
+      font-size: 10.5px;
     }
 
     .ztl-no {
@@ -462,20 +491,13 @@
       color: var(--danger);
     }
 
-    .weather-text {
-      font-weight: 600;
-      color: var(--primary-light);
-    }
-
-    /* Совет дня */
     .tip-content {
-      font-size: 13.5px;
+      font-size: 13px;
       font-style: italic;
       color: var(--text-dark);
       line-height: 1.5;
     }
 
-    /* Анимация */
     .fade-in {
       animation: fadeInUp 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
@@ -497,28 +519,27 @@
         grid-template-rows: auto auto 1fr;
         height: auto;
         overflow: visible;
-        padding: 16px;
-        gap: 16px;
+        padding: 14px;
+        gap: 14px;
       }
 
       header {
-        padding: 16px;
+        padding: 14px;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
         align-items: flex-start;
       }
 
       .global-stats {
         width: 100%;
         justify-content: space-between;
-        flex-wrap: wrap;
       }
 
       .sidebar-left {
         flex-direction: row;
         overflow-x: auto;
         white-space: nowrap;
-        padding: 10px;
+        padding: 8px;
         border-radius: 12px;
         -webkit-overflow-scrolling: touch;
         scroll-snap-type: x mandatory;
@@ -529,17 +550,13 @@
       }
 
       .day-button {
-        flex: 0 0 150px;
-        padding: 10px;
+        flex: 0 0 145px;
+        padding: 8px 12px;
         scroll-snap-align: start;
       }
 
       .day-button .day-title {
         font-size: 12px;
-      }
-
-      .day-photo {
-        height: 200px;
       }
 
       .sidebar-right {
@@ -572,38 +589,37 @@
 <body>
 
 <div class="app-container">
-  <!-- Шапка дашборда -->
   <header>
     <div class="brand">
       <h1>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         Salento Explorer 2026
       </h1>
-      <p>Бортовой журнал научной экспедиции семей Романюк & Чайко</p>
+      <p>Бортовой журнал семейной экспедиции Романюк & Чайко</p>
     </div>
     <div class="global-stats">
       <div class="stat-badge">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Экспедиция: <strong>21 - 31 июля 2026</strong>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Период: <strong>21 - 31 июля 2026</strong>
       </div>
       <div class="stat-badge">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Экипаж: <strong>Алексей 11, Арон 13, Адриан 15 лет</strong>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Экипаж: <strong>Алексей (11), Арон (13), Адриан (15)</strong>
       </div>
     </div>
   </header>
 
   <div class="dashboard-layout">
-    <!-- Левая колонка: Хронологическое меню -->
+    <!-- Левая колонка -->
     <aside class="sidebar-left" id="daysMenu">
       <h3>План экспедиции</h3>
     </aside>
 
+    <!-- Центр -->
     <main class="main-content" id="mainContent">
-      <!-- Баннер дня -->
       <div class="day-banner" id="dayBanner">
         <div class="badge" id="dayBadge">ДЕНЬ 1</div>
-        <h2 id="dayTitle">Загрузка экспедиции...</h2>
+        <h2 id="dayTitle">Загрузка данных...</h2>
         <div class="route-path">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect cx="3" cy="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
           <span id="dayRoute">Бари → Салиньяно</span>
@@ -613,13 +629,11 @@
         </svg>
       </div>
 
-      <!-- Иллюстрация дня -->
-      <div class="day-media-card">
-        <img id="dayImage" src="" alt="Иллюстрация дня" class="day-photo" onerror="this.src='https://placehold.co/800x400/0a3d62/ffffff?text=Salento+2026'">
-        <div class="day-photo-caption" id="dayImageCaption">Снимок исследуемой локации</div>
+      <div class="day-image-container">
+        <img id="dayImage" class="day-image" src="" alt="Иллюстрация дня" onerror="this.src='https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80'">
+        <div class="day-image-caption" id="dayImageCaption">Виды Саленто</div>
       </div>
 
-      <!-- Карточка 1: Главная цель -->
       <div class="section-card fade-in">
         <div class="card-header">
           <div class="card-icon">
@@ -632,88 +646,83 @@
         </div>
       </div>
 
-      <!-- Карточка 2: Квест Экипажа -->
       <div class="section-card quest-box fade-in">
         <div class="card-header">
           <div class="card-icon" style="background-color: rgba(230, 126, 34, 0.12);">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
           </div>
-          <h3>Миссия юных исследователей 🧭</h3>
+          <h3>Исследовательские миссии юных штурманов 🧭</h3>
         </div>
-        <div class="card-body">
-          <p id="dayQuest" style="color: #2c3e50; font-size: 14.5px;"></p>
+        <div class="card-body" id="dayQuestContainer">
+          <!-- Заполняется динамически -->
         </div>
       </div>
 
-      <!-- Карточка 3: Климатическое убежище -->
       <div class="section-card shelter-box fade-in">
         <div class="card-header">
           <div class="card-icon blue">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
-          <h3>Убежище от полуденного зноя ❄️</h3>
+          <h3>Убежище от зноя (12:30 - 17:00) ❄️</h3>
         </div>
         <div class="card-body">
           <p id="dayShelter">Где спасаться от летней жары...</p>
         </div>
       </div>
 
-      <!-- Карточка 4: Гастрономическое открытие -->
       <div class="section-card fade-in">
         <div class="card-header">
           <div class="card-icon" style="background: rgba(46, 204, 113, 0.1); color: var(--success);">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
-          <h3>Локальная гастрономия 🍕</h3>
+          <h3>Гастрономия дня 🍕</h3>
         </div>
         <div class="card-body">
-          <p id="dayGastronomy">Кулинарное знакомство...</p>
+          <p id="dayGastronomy">Кулинарное знакомство с Саленто...</p>
         </div>
       </div>
     </main>
 
     <aside class="sidebar-right">
-      <!-- Виджет Прогресса -->
       <div class="widget progress-widget">
         <div class="widget-title">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           Прогресс открытий
         </div>
         <div class="progress-circle-container">
-          <svg class="progress-circle" width="120" height="120">
-            <circle class="progress-bg" cx="60" cy="60" r="50"></circle>
-            <circle id="progressBar" class="progress-bar" cx="60" cy="60" r="50"></circle>
+          <svg class="progress-circle" width="110" height="110">
+            <circle class="progress-bg" cx="55" cy="55" r="48"></circle>
+            <circle id="progressBar" class="progress-bar" cx="55" cy="55" r="48"></circle>
           </svg>
           <div class="progress-text" id="progressText">9%</div>
         </div>
-        <div class="progress-label">Уровень анализа региона Романюками & Чайко</div>
+        <div class="progress-label">Освоение научных тайн региона</div>
       </div>
 
-      <!-- Виджет Логистики и Погоды -->
       <div class="widget">
         <div class="widget-title">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect cx="1" cy="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          Карта, Логистика & Погода
+          Логистика & Погода 🚗
         </div>
         <div class="logistics-list">
           <div class="logistics-item">
-            <div class="logistics-item-icon">🌡️</div>
+            <div class="logistics-item-icon">🌤️</div>
             <div class="logistics-item-content">
-              <strong>Погода за бортом</strong>
-              <span id="logWeather" class="weather-text">+36°C ☀️ Ясно</span>
+              <strong>Сводка погоды</strong>
+              <span id="logWeather">+32°C ☀️ Ясно</span>
             </div>
           </div>
           <div class="logistics-item">
             <div class="logistics-item-icon">📍</div>
             <div class="logistics-item-content">
-              <strong>Дистанция</strong>
+              <strong>Маршрут и дистанция</strong>
               <span id="logDistance">~220 км</span>
             </div>
           </div>
           <div class="logistics-item">
             <div class="logistics-item-icon">⏱️</div>
             <div class="logistics-item-content">
-              <strong>В пути</strong>
+              <strong>Время в пути</strong>
               <span id="logTime">2.5 часа</span>
             </div>
           </div>
@@ -721,7 +730,7 @@
             <div class="logistics-item-icon">🛑</div>
             <div class="logistics-item-content">
               <strong>Ограничения ZTL</strong>
-              <span id="logZtl" class="ztl-badge ztl-no">Без ZTL</span>
+              <span id="logZtl" class="ztl-badge ztl-no">Нет данных</span>
             </div>
           </div>
           <div class="logistics-item">
@@ -734,11 +743,10 @@
         </div>
       </div>
 
-      <!-- Виджет Секрета дня -->
       <div class="widget" style="background-color: var(--accent-light); border-color: rgba(230, 126, 34, 0.15);">
         <div class="widget-title" style="color: var(--accent);">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Секретный совет
+          Совет экспедиции
         </div>
         <p class="tip-content" id="dayTip">Загрузка важной информации...</p>
       </div>
@@ -752,313 +760,335 @@
       id: 21,
       date: "21 июля",
       dayOfWeek: "Вторник",
-      title: "Адаптация & Джаз",
-      route: "Бари → Кастро (База 1)",
+      title: "База 1 (Кастро): Адаптация & Джаз",
+      route: "Бари → Кастро",
       progress: 9,
       badge: "День 1",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #1e3d59 0%, #17b978 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Атмосферный вечер у старинной оборонительной башни под звуки джазового фестиваля",
-      objective: "[База 1: Кастро] Трансфер из аэропорта Бари в потрясающий скалистый город Кастро, заселение в наши первые апартаменты. Вечерний выезд в Салиньяно на атмосферный Confimare Music Fest прямо у подножия башни Торре дель Рипаро. Знакомство с панорамой Кастро Альта — древнего акрополя Castrum Minervae.",
-      navigatorQuest: `<strong>Инженерно-акустическая миссия у башни Салиньяно:</strong><br>
-        • <strong>Алексей (11 лет):</strong> С помощью диктофона на смартфоне замеряет громкость музыки на разных расстояниях от башни для исследования затухания звуковых волн у подножия средневековой кладки.<br>
-        • <strong>Арон (13 лет):</strong> Изучает шероховатую текстуру известняка башни XVI века и объясняет, почему каменные выступы частично поглощают эхо.<br>
-        • <strong>Адриан (15 лет):</strong> Моделирует распространение звука от круглой отражающей конструкции башни и объясняет ребятам разницу в дифракции высоких и низких частот на открытом воздухе.`,
-      climateShelter: "Дневной пик зноя: температура превышает $+36^\\circ\\text{C}$! Рекомендуется оставаться в кондиционируемых помещениях в Кастро до 17:00 для адаптации.",
+      imageUrl: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Средневековая башенная фортификация и побережье Кастро",
+      objective: "Прибытие команды Романюк и Чайко в аэропорт Бари, трансфер на первую исследовательскую базу в Кастро (Castro Alta). Обустройство в апартаментах с панорамным видом на Адриатику. Вечерний выезд в Салиньяно на Confimare Music Fest прямо у подножия башни Торре дель Рипаро.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Замерить шумомётом смартфона уровень громкости джазовой музыки в 5 и 20 метрах от известняковой стены башни." },
+        { name: "Арон (13 лет)", task: "Определить угол отражения звуковых волн от шероховатой поверхности древней каменной кладки XVI века." },
+        { name: "Адриан (15 лет)", task: "Рассчитать коэффициент поглощения звука местным известняком по сравнению с современным бетоном." }
+      ],
+      climateShelter: "Дневной пик зноя: температура превышает $+36^\circ\text{C}$! Рекомендуется оставаться в кондиционируемых помещениях в Кастро до 17:00 для адаптации.",
       gastronomy: "Ароматный картофельный пирог Питта ди патате (Pitta di patate) с начинкой из томленого лука, маслин, каперсов и томатов Саленто.",
-      weather: "+36°C ☀️ Сухо, сильный дневной зной",
+      weather: "+32°C ☀️ Ясно, тепло",
       logistics: {
         distance: "~220 км (из Бари)",
         time: "~2.5 часа",
-        ztl: "Без ZTL",
+        ztl: "Без ZTL в Кастро",
         ztlClass: "ztl-no",
         parking: "Бесплатная муниципальная парковка прямо у подножия башни Торре дель Рипаро (Salignano)."
       },
-      tip: "Держите в машине сумку-холодильник с запасом минеральной воды. Первые сутки на юге Италии требуют обильной гидратации!"
+      tip: "Убедитесь, что в авто заправлен полный бак воды, а кондиционер настроен на $+23^\circ\text{C}$ для плавной адаптации детей к южному климату."
     },
     {
       id: 22,
       date: "22 июля",
       dayOfWeek: "Среда",
-      title: "Гражданская наука & Дельфины",
+      title: "Морская Биология & Дельфины",
       route: "Кастро → Таранто → Удженто",
       progress: 18,
       badge: "День 2",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Экспедиция Jonian Dolphin Conservation на катамаране в заливе Таранто",
-      objective: "[База 1: Кастро] Уникальная 5-часовая морская исследовательская экспедиция с биологами Jonian Dolphin Conservation. Мониторинг дельфинов и китообразных в Ионическом море, сбор научных данных и экскурсия в VR-музей Ketos. Вечером — визит в Удженто на традиционную гастрономическую сагру.",
-      navigatorQuest: `<strong>Гидроакустическая морская миссия:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Записывает спектры эхолокационных щелчков дельфинов с помощью корабельного гидрофона.<br>
-        • <strong>Арон (13 лет):</strong> Изучает конструкцию катамарана и объясняет, как малошумные двигатели позволяют безопасно приближаться к животным.<br>
-        • <strong>Адриан (15 лет):</strong> Сравнивает амплитуды и частоты записанных сигналов со справочником биоакустики дельфинов и классифицирует виды (афалины, серые или полосатые дельфины).`,
+      imageUrl: "https://images.unsplash.com/photo-1570459027562-4a916cc6113f?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Исследовательский катамаран Jonian Dolphin Conservation в заливе Таранто",
+      objective: "5-часовая морская экспедиция с учеными-биологами Jonian Dolphin Conservation на катамаране в Ионическом море. Гражданская наука (citizen science) по мониторингу китообразных. Посещение интерактивного VR-музея Ketos.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Записать гидрофоном «свист-автограф» серого дельфина и сопоставить его со звуковым каталогом." },
+        { name: "Арон (13 лет)", task: "Провести фотоидентификацию спинных плавников дельфинов по уникальным формам надрезов." },
+        { name: "Адриан (15 лет)", task: "Замерить соленость и температуру воды за бортом, зафиксировав точки эхолота на карте глубины." }
+      ],
       climateShelter: "Во второй половине дня, после соленого морского ветра, вся команда перемещается в прохладные залы мультимедийного музея Ketos в Таранто с кондиционированием.",
       gastronomy: "Sagra della Puccia в Удженто. Горячая лепешка пучча с оливками прямо из дровяной печи, наполненная свежими сырами и баклажанами гриль.",
-      weather: "+34°C 🌤️ Освежающий морской бриз",
+      weather: "+31°C 🌤️ Освежающий морской бриз",
       logistics: {
         distance: "~135 км",
-        time: "~1 час 35 минут по SS7",
-        ztl: "ZTL в Таранто активна!",
+        time: "~1 час 35 минут",
+        ztl: "ZTL в центре Таранто",
         ztlClass: "ztl-yes",
-        parking: "Паркуйтесь у причала Molo Sant'Eligio, откуда стартует научно-исследовательский катамаран."
+        parking: "Охраняемая парковка на причале Molo Sant'Eligio за пределами ZTL Таранто."
       },
-      tip: "На катамаране используйте только биоразлагаемые солнцезащитные кремы высокой степени защиты (SPF 50), чтобы не вредить планктону."
+      tip: "На катамаране используйте биоразлагаемые солнцезащитные кремы, чтобы не наносить вред морским микроорганизмам."
     },
     {
       id: 23,
       date: "23 июля",
       dayOfWeek: "Четверг",
-      title: "Астрофизика & Древнее Море",
+      title: "Астрофизика & Далекий Космос",
       route: "Кастро → Касарано → Галлиполи",
       progress: 27,
       badge: "День 3",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #0575e6 0%, #00f260 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Астрономический парк Сан-Лоренцо с планетарием и обсерваторией",
-      objective: "[База 1: Кастро] Интерактивная научная программа в Астрономическом парке Сан-Лоренцо в Касарано: осмотр коллекции метеоритов, шоу в 3D-планетарии и ночные наблюдения за кольцами Сатурна в мощные оптические телескопы после 20:00. Днем — исследование Галлиполи.",
-      navigatorQuest: `<strong>Космическая физическая миссия в Астропарке:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Изучает структуру железо-каменного метеорита (палласита) под бинокулярным микроскопом.<br>
-        • <strong>Арон (13 лет):</strong> Сравнивает вес образца метеорита с куском земного базальта равного объема для оценки плотности внеземных материалов.<br>
-        • <strong>Адриан (15 лет):</strong> Рассчитывает по формуле свободного падения силу удара условного метеорита, образовавшего карстовые воронки в геологической истории Апулии.`,
+      imageUrl: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "3D-планетарий и обсерватория Сан-Лоренцо в Касарано",
+      objective: "Интерактивная научная программа в Астропарке Сан-Лоренцо (Касарано): Музей космонавтики, 3D-планетарий и вечернее наблюдение за кольцами Сатурна в оптические телескопы с 20:00.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Определить под микроскопом текстурные отличия железного метеорита (сидерита) от хрупкого хондрита." },
+        { name: "Арон (13 лет)", task: "Вычислить плотность метеоритного образца и сравнить ее с плотностью местного карстового известняка." },
+        { name: "Адриан (15 лет)", task: "Рассчитать спектральный класс наблюдаемых через телескоп звезд по их визуальному цвету." }
+      ],
       climateShelter: "Днем — пляжное время в карстовых лагунах Галлиполи. С 16:30 переезд в кондиционированные научные павильоны Астропарка в Касарано.",
       gastronomy: "Сырые красные креветки (Gamberi Rossi di Gallipoli) на историческом рыбном рынке Галлиполи прямо у крепостных стен.",
-      weather: "+35°C ☀️ Безупречно ясное вечернее небо",
+      weather: "+29°C ☀️ Малооблачно, вечерний морской бриз",
       logistics: {
         distance: "~52 км",
-        time: "~45 минут по SP363/SS101",
-        ztl: "Без ZTL в Астропарке",
+        time: "~45 минут",
+        ztl: "Без ZTL у Астропарка",
         ztlClass: "ztl-no",
-        parking: "Бесплатная закрытая стоянка на территории Астрономического парка Сан-Лоренцо."
+        parking: "Частная бесплатная парковка на территории Астрономического парка Сан-Лоренцо."
       },
-      tip: "Для ночных наблюдений у телескопов на открытом плато возьмите с собой легкие кофты — после захода солнца возможен бодрящий ветер."
+      tip: "Для ночных наблюдений на обсерватории захватите легкие ветровки — на высоком карстовом плато ночью бывает свежо."
     },
     {
       id: 24,
       date: "24 июля",
       dayOfWeek: "Пятница",
-      title: "Гранд-Шоу & Монументы",
-      route: "Кастро → Санта-Мария-ди-Леука → Остуни",
+      title: "Гранд-Шоу Водопада & Джон Ледженд",
+      route: "Кастро → Леука → Остуни",
       progress: 36,
       badge: "День 4",
+      isToday: true,
       colorGradient: "linear-gradient(135deg, #f12711 0%, #f5af19 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Спуск Монументального водопада на самом краю земли на мысе Санта-Мария-ди-Леука",
-      objective: "[База 1: Кастро] Грандиозный вечерний запуск 40-метрового Монументального Водопада в Санта-Мария-ди-Леука в 19:30 (финал великого Апулийского акведука). Поздний переезд в Остуни на концерт John Legend на Locus Festival.",
-      navigatorQuest: `<strong>Гидродинамическая миссия у Водопада:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Исследует устройство каскадов водопада и фиксирует время прохождения воды сверху вниз.<br>
-        • <strong>Арон (13 лет):</strong> Разбирает схему сообщающихся сосудов Апулийского акведука, доставившего пресную воду за сотни километров самотеком.<br>
-        • <strong>Адриан (15 лет):</strong> Рассчитывает гидростатическое давление водяного столба у подножия 40-метрового спуска водопада.`,
+      imageUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Световые огни сцены и историческая архитектура на Locus Festival",
+      objective: "Торжественный запуск 40-метрового Монументального Водопада (Cascata Monumentale) в Санта-Мария-ди-Леука (в 19:30). Позднее грандиозное шоу — концерт John Legend на Locus Festival в Белом городе Остуни.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Посчитать число ступеней монументальной лестницы Апулийского акведука вдоль водопада." },
+        { name: "Арон (13 лет)", task: "Объяснить принцип сообщающихся сосудов, благодаря которому вода акведука течет без насосов." },
+        { name: "Адриан (15 лет)", task: "Оценить объемный расход воды водопада, замерив скорость наполнения нижней чаши бассейна." }
+      ],
       climateShelter: "Днем — укрытие от солнца в тенистых барочных двориках или в лесной тени сосен побережья перед масштабной вечерней поездкой.",
       gastronomy: "Пышная остунийская фокачча с печеными томатами черри, оливками и нежным сыром Страчателла.",
-      weather: "+33°C 💨 Ветрено на побережье, комфортно вечером",
+      weather: "+26°C 🌦️ (СЕГОДНЯ) Кратковременный утренний дождь, днем солнечно, ветер Трамонтана 27 км/ч",
       logistics: {
         distance: "~30 км до Леуки, далее в Остуни",
-        time: "~1 час 15 минут по SS16",
-        ztl: "В Остуни жесткий ZTL!",
+        time: "~1 час 15 минут",
+        ztl: "Строгий ZTL в Остуни",
         ztlClass: "ztl-yes",
-        parking: "Оставьте авто в Остуни на большой парковке Parcheggio Via G. Pinto. Въезд в Белый город закрыт."
+        parking: "Оставьте автомобиль на большой парковке Parcheggio Via G. Pinto в Остуни. Центр полностью закрыт!"
       },
-      tip: "В Остуни из-за фестиваля будет очень много людей. Припаркуйтесь до 17:30, чтобы спокойно прогуляться всей группой."
+      tip: "Из-за концерта Джона Ледженда наплыв гостей в Остуни будет огромным. Приезжайте до 18:00, чтобы занять парковку."
     },
     {
       id: 25,
       date: "25 июля",
       dayOfWeek: "Суббота",
-      title: "Световые Фракталы & Сагра",
+      title: "Световые Фракталы & Сагра Хлеба",
       route: "Кастро → Галлиполи → Курси",
       progress: 45,
       badge: "День 5",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #aa076b 0%, #61045f 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Традиционная иллюминация Luminarie, превращающая площади городов в сказку",
-      objective: "[База 1: Кастро] Красочная Festa di Santa Cristina в Галлиполи с морской процессией и зажиганием колоссальных фрактальных световых арок (Luminarie). Поздний ужин на аграрном празднике Sagra del Pane в Курси.",
-      navigatorQuest: `<strong>Конструкторско-инженерная миссия Luminarie:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Вычисляет примерное количество светодиодов на одной арке Luminarie, зная шаг их установки.<br>
-        • <strong>Арон (13 лет):</strong> Изучает деревянные балки, растяжки и противовесы конструкций Luminarie, способные выдержать штормовой ветер.<br>
-        • <strong>Адриан (15 лет):</strong> Находит в узорах светодиодной иллюминации фрактальные самоподобные фигуры и объясняет принципы их математического построения.`,
+      imageUrl: "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Гигантские фрактальные световые арки Luminarie на праздниках в Саленто",
+      objective: "Праздник Festa di Santa Cristina в Галлиполи: морская процессия лодок и грандиозное зажигание световых гирлянд Luminarie. Поздний ужин на празднике Sagra del Pane в Курси.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Сфотографировать повторение геометрии светящихся арок и найти 3 повторяющихся элемента." },
+        { name: "Арон (13 лет)", task: "Изучить деревянные мостовые опоры Luminarie и объяснять, как сквозная решетка гасит ветер." },
+        { name: "Адриан (15 лет)", task: "Посчитать суммарную электрическую мощность светодиодных конструкций праздничного ансамбля." }
+      ],
       climateShelter: "В разгар жары посетите кондиционированные прохладные залы Замка Карла V в Лечче с его мощнейшими каменными стенами.",
       gastronomy: "Душистый ломоть свежеиспеченного хлеба из твердых сортов пшеницы Grano Duro с оливковым маслом первого отжима на празднике в Курси.",
-      weather: "+35°C ☀️ Жарко, легкий юго-восточный ветер",
+      weather: "+27°C ☀️ Преимущественно солнечно, северный ветер 21 км/ч (+18°C ночью)",
       logistics: {
         distance: "~52 км до Галлиполи",
         time: "~45 минут",
-        ztl: "Ограничен въезд в Галлиполи!",
+        ztl: "Ограничен въезд в Галлиполи",
         ztlClass: "ztl-yes",
-        parking: "Паркуйтесь у порта Галлиполи (Porto di Gallipoli) и перейдите по мосту в Старый Город пешком."
+        parking: "Паркуйтесь у порта Галлиполи (Porto di Gallipoli) и идите в старый город пешком по мосту."
       },
-      tip: "Световое шоу Luminarie зажигается в сумерках около 21:00. Приезжайте пораньше, чтобы успеть занять лучшие места у моста."
+      tip: "Морская процессия начинается в 18:30. Самый лучший обзор открывается с высоких крепостных стен старого города."
     },
     {
       id: 26,
       date: "26 июля",
       dayOfWeek: "Воскресенье",
-      title: "Эндемики Бездны & Пещера Зинзулуза",
-      route: "Кастро → Марина Сан-Грегорио (База 2)",
+      title: "База 2 (Сан-Грегорио): Пещеры & Оливы",
+      route: "Кастро → М. Сан-Грегорио",
       progress: 54,
       badge: "День 6",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #134e5e 0%, #71b280 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1507163211169-0a1dd7228bb2?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Карстовая пещера Зинзулуза со сталактитами, открывающаяся прямо в Адриатическое море",
-      objective: "[Переезд на Базу 2: Марина Сан-Грегорио] Утреннее исследование окрестностей нашей первой базы: спуск в знаменитую карстовую пещеру Зинзулуза в Кастро. Изучение «Коридора чудес», зала «Собор» и подземного озера Кокито. Купание в Piscina Naturale Zinzulusa. После обеда — переезд на Ионическое побережье и заселение на вторую базу в Marina San Gregorio (бухта Пату).",
-      navigatorQuest: `<strong>Спелеобиологическая миссия в Зинзулузе:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Рассматривает структуру свисающих сталактитов («зинзули») и описывает подросткам процесс их многовекового формирования из растворенного известняка.<br>
-        • <strong>Арон (13 лет):</strong> Объясняет, почему в зале «Собор» в больших количествах откладывалось гуано летучих мышей и какова была технология его промышленной добычи до 1940 года.<br>
-        • <strong>Адриан (15 лет):</strong> Анализирует гидрохимическую стратификацию озера Кокито и объясняет биологический феномен выживания слепой депигментированной креветки Typhlocaris salentina в изолированной водной среде.`,
+      imageUrl: "https://images.unsplash.com/photo-1541359349932-8c03e30f40d0?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Карстовая пещера Зинзулуза и живописный природный морской бассейн",
+      objective: "Утренний спуск в пещеру Зинзулуза (Grotta Zinzulusa) прямо в Кастро: исследование подземного озера Кокито и эндемичной слепой креветки Typhlocaris salentina. Купание в скальном бассейне Piscina Naturale. Переезд на Базу 2 в Марина Сан-Грегорио (Пату).",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Найти в подземном озере Кокито слепую прозрачную креветку и зафиксировать ее на фото." },
+        { name: "Арон (13 лет)", task: "Объяснить, почему пресная вода сверху не смешивается соленой горячей водой на дне озера." },
+        { name: "Адриан (15 лет)", task: "Рассчитать возраст самых крупных минеральных сталактитов «Zinzuli» по скорости нарастания кальцита." }
+      ],
       climateShelter: "Пещера Зинзулуза — природный кондиционер (+16°C) прямо у воды. После пещеры купаемся в Piscina Naturale, где вода циркулирует напрямую из Адриатики.",
       gastronomy: "Свежевыловленные морские ежи (Ricci di mare) и паста с морепродуктами в ресторанчиках у гавани Кастро.",
-      weather: "+37°C 🔥 Экстремальный зной на поверхности, прохлада в пещере",
+      weather: "+29°C 🌤️ Солнечно днем, южный ветер (Широкко), возможна ночная гроза",
       logistics: {
         distance: "Пешком в Кастро, затем ~32 км до новой базы",
-        time: "~35 минут до Марина Сан-Грегорио",
-        ztl: "Без ZTL",
+        time: "~35 минут",
+        ztl: "Без ZTL в Сан-Грегорио",
         ztlClass: "ztl-no",
-        parking: "Парковка непосредственно у входа в пещеру Зинзулуза в Кастро."
+        parking: "Свободная парковка у апартаментов команды в Marina San Gregorio."
       },
-      tip: "Для посещения пещеры нужна нескользящая обувь — влажность внутри грота достигает 98%, ступени могут быть скользкими."
+      tip: "Обувь на резиновой подошве обязательна — влажные известняковые ступени в пещере бывают скользкими."
     },
     {
       id: 27,
       date: "27 июля",
       dayOfWeek: "Понедельник",
-      title: "Индустриальная Физика Пасты",
-      route: "Марина С. Г. → Малье → Сальве",
+      title: "Индустриальная Физика & Шоколад",
+      route: "М. Сан-Грегорио → Малье",
       progress: 63,
       badge: "День 7",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #4b6cb7 0%, #182848 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Традиционное ручное производство премиальной пасты на бронзовых матрицах",
-      objective: "[База 2: Марина Сан-Грегорио] Технический визит в Малье на легендарную фабрику Pastificio Benedetto Cavalieri (с 1918 года) и в музей шоколада Maglio. Вечернее участие в традиционном празднике Festa patronale di San Nicola в соседнем городке Сальве (10 минут от базы) с световой иллюминацией и оркестрами.",
-      navigatorQuest: `<strong>Молекулярно-физическая миссия:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Проводит тактильный тест и сравнивает матовую текстуру пасты из бронзовых матриц со стандартной гладкой пастой.<br>
-        • <strong>Арон (13 лет):</strong> Изучает тепловой баланс сушки «Delicato» (40 часов при температуре не выше $+38^\\circ\\text{C}$) и ее влияние на сохранение структуры белка пасты.<br>
-        • <strong>Адриан (15 лет):</strong> Объясняет физику поверхностного натяжения и силы сцепления (адгезии), благодаря которым соус надежно удерживается на шероховатой пасте Cavalieri.`,
+      imageUrl: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Историческое производство пасты и ремесло темперирования шоколада",
+      objective: "Технический визит на фабрику пасты Pastificio Benedetto Cavalieri (основана в 1918 г.) и Музей шоколада Maglio в Малье. Вечерний выезд на Cinzella Festival в известняковом карьере Фантиано.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Сравнить на ощупь гладкую пасту и шершавую поверхность пасты Cavalieri из бронзовых матриц." },
+        { name: "Арон (13 лет)", task: "Объяснить, как микропоры на пасте физически удерживают соус за счет сил поверхностного натяжения." },
+        { name: "Адриан (15 лет)", task: "Изучить технологию «Delicato» — низкотемпературную сушку при +38°C в течение 40 часов и сохранность структуры глютена." }
+      ],
       climateShelter: "Прохладные кондиционированные цеха шоколадного музея Maglio (с изучением темперирования какао-масла) спасут от жары с 13:00 до 16:30.",
       gastronomy: "Знаменитая паста «Ruote Pazze» (Безумные колеса) от Benedetto Cavalieri с томатным соусом и пармезаном.",
-      weather: "+35°C ☀️ Переменная облачность к вечеру",
+      weather: "+29°C 🌩️ Переменная облачность, местами кратковременные грозы, влажность 74%",
       logistics: {
         distance: "~45 км от базы до Малье",
         time: "~40 минут по SS274",
         ztl: "Без ZTL",
         ztlClass: "ztl-no",
-        parking: "Удобная парковка на улицах Малье за пределами синей разметки или у ворот фабрики."
+        parking: "Уличная парковка у ворот фабрики Cavalieri в Малье."
       },
-      tip: "Для визита на Pastificio Cavalieri заранее позвоните по телефону +39 0836.483620 для подтверждения времени встречи."
+      tip: "Предварительная запись на фабрику Cavalieri обязательна. Попросите Арона переводить инструкции гида!"
     },
     {
       id: 28,
       date: "28 июля",
       dayOfWeek: "Вторник",
-      title: "Антропология Пасленовых",
-      route: "Марина С. Г. → Кастри → Мартина-Франка",
+      title: "Антропология Пасленовых & Опера",
+      route: "М. Сан-Грегорио → Мартина-Франка",
       progress: 72,
       badge: "День 8",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #e65c00 0%, #f9d423 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Аутентичные южноитальянские улочки и праздники баклажана на площадях Саленто",
-      objective: "[База 2: Марина Сан-Грегорио] Участие в гастрономическом празднике Marangiane in Festa в Кастри-ди-Лечче под ритмы зажигательного танца пиццика. Вечером — классическая опера под звездами во дворе Palazzo Ducale в Мартина-Франка.",
-      navigatorQuest: `<strong>Биохимическая миссия осмоса:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Проводит эксперимент с посыпанием баклажанов солью и фиксирует выделение капель сока на поверхности среза.<br>
-        • <strong>Арон (13 лет):</strong> С точки зрения клеточной биологии описывает плазмолиз и то, как осмос извлекает избыточную горькую влагу.<br>
-        • <strong>Адриан (15 лет):</strong> Объясняет химический состав горького алкалоида соланина и то, как правильное запекание разрушает его структуру, делая баклажан безопасным и сладким.`,
+      imageUrl: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Дворец Palazzo Ducale и праздник Marangiane in Festa",
+      objective: "Участие в гастро-фестивале Marangiane in Festa в Кастри-ди-Лечче (культура баклажана и танцы пиццика). Альтернатива: Вечер оперы на Festival della Valle d'Itria во дворе Герцогского дворца в Мартина-Франка.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Провести кулинарный опыт: замерить объем сока, выделившегося из подсоленного баклажана." },
+        { name: "Арон (13 лет)", task: "Объяснить принцип осмоса: как соль заставляет клетки баклажана отдавать влагу вместе с горечью соланина." },
+        { name: "Адриан (15 лет)", task: "Оценить естественную акустику внутреннего двора барочного Palazzo Ducale XVII века." }
+      ],
       climateShelter: "Днем спрячьтесь в величественном Palazzo Ducale в Мартина-Франка — его мощные каменные стены превосходно сдерживают жару.",
       gastronomy: "Баклажанная запеканка Пармиджана (Parmigiana di melanzane) с тягучим сыром моцарелла и свежим базиликом.",
-      weather: "+34°C ☀️ Идеальный вечер для оперы на воздухе",
+      weather: "+30°C ☀️ Ясно и солнечно, прохладный северный ветер 25 км/ч",
       logistics: {
         distance: "~75 км до Кастри, далее на север",
-        time: "~1 час по SS274/SS16",
+        time: "~1 час",
         ztl: "Без ZTL в Кастри",
         ztlClass: "ztl-no",
-        parking: "В Кастри паркуйтесь на въезде у муниципальной спортивной площадки."
+        parking: "Бесплатная парковка на въезде в Кастри у муниципальной спортивной площадки."
       },
-      tip: "Для оперного вечера в Мартина-Франка стоит одеться в стиле Smart Casual — это создаст атмосферу особого праздника для подростков."
+      tip: "Для оперного вечера в Мартина-Франка пригодится стиль одежды Smart Casual — ребятам понравится быть взрослыми зрителями!"
     },
     {
       id: 29,
       date: "29 июля",
       dayOfWeek: "Среда",
-      title: "Мегалиты Пату & Мастера Лечче",
-      route: "Марина С. Г. → Пату → Лечче",
+      title: "Мегалиты Пату & Мастерская Барокко",
+      route: "М. Сан-Грегорио → Лечче",
       progress: 81,
       badge: "День 9",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Мегалитический комплекс Чентопьетре в Пату, построенный из 100 гигантских плит древнего города Верето",
-      objective: "[База 2: Марина Сан-Грегорио] Утреннее исследование окрестностей нашей базы в Пату: посещение загадочного мегалитического склепа Чентопьетре (IX век) и подъем на холм Верето с древним акрополем. Вечером — поездка в Лечче на мастер-класс по барочному папье-маше (Cartapesta) в мастерской Марко Эпикочи.",
-      navigatorQuest: `<strong>Материаловедческая & Историческая миссия:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Исследует мегалитическую кладку Чентопьетре, находит византийские фрески XIV века и замеряет размеры крупнейших плит.<br>
-        • <strong>Арон (13 лет):</strong> Изучает рецепт клея из пшеничной муки для папье-маше и объясняет роль крахмального клейстера при связывании слоев бумаги на каркасе из соломы и проволоки.<br>
-        • <strong>Адриан (15 лет):</strong> Объясняет химическое действие добавленного в клей медного купороса — как ионы меди защищают целлюлозу от грибка и грызунов на века, сохраняя хрупкие статуи Лечче.`,
+      imageUrl: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Мегалитический памятник Чентопьетре и мастерская папье-маше в Лечче",
+      objective: "Утренний визит к древнему мегалитическому комплексу Чентопьетре (Centopietre) в Пату — склепу из 100 монолитных плит мессапского города Верето. Переезд в Лечче на мастер-класс по папье-маше (Cartapesta) у Марко Эпикочи.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Сосчитать плиты в основании склепа Чентопьетре и найти византийские фрески XIV века." },
+        { name: "Арон (13 лет)", task: "Понять, почему мастера Лечче добавляли медный купорос в мучной клей для статуй (защита от жуков и плесени)." },
+        { name: "Адриан (15 лет)", task: "Изучить технику раскаленных утюжков (ferri caldi) для моделирования складок бумаги и соломенного каркаса." }
+      ],
       climateShelter: "Днем — спасение в прохладной каменной тени мегалитов Чентопьетре, а во второй половине дня — в кондиционированной мастерской папье-маше прямо на площади Дуомо в Лечче.",
       gastronomy: "Сладкие пирожные Пастиччотто (Pasticciotto Leccese) со сливочным заварным кремом из исторической кондитерской.",
-      weather: "+36°C 🔥 Жарко, сухо на равнине",
+      weather: "+31°C ☀️ Солнечно, сухой летний зной",
       logistics: {
         distance: "~4 км до Пату, затем ~65 км до Лечче",
-        time: "~50 минут по SS274/SS16",
-        ztl: "В Лечче строгая ZTL!",
+        time: "~55 минут",
+        ztl: "Строгий ZTL в Лечче",
         ztlClass: "ztl-yes",
-        parking: "Оставьте авто на большой перехватывающей парковке Foro Boario в Лечче."
+        parking: "Оставьте автомобиль на перехватывающей парковке Лечче Parcheggio Foro Boario."
       },
-      tip: "С холма Верето открывается невероятный панорамный вид на море — возьмите бинокль, чтобы штурманы могли изучить береговую линию."
+      tip: "В мастерской Марко Эпикочи каждый мальчик сможет слепить и забрать с собой собственный сувенир из папье-маше!"
     },
     {
       id: 30,
       date: "30 июля",
       dayOfWeek: "Четверг",
-      title: "Экология Скал & Мультимедиа Матеры",
-      route: "Марина С. Г. → Портосельваджо → Матера (База 3)",
+      title: "База 3 (Матера): Заповедник & Пещеры Сасси",
+      route: "М. Сан-Грегорио → Портосельваджо → Матера",
       progress: 90,
       badge: "День 10",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Каменные лабиринты Сасси ди Матера, высеченные прямо в туфовых скалах",
-      objective: "[Переезд на Базу 3: Матера] Утренний пеший поход через сосновый бор Портосельваджо к бухте с пресными ключами. Дневной переезд в Базиликату — древний скальный город Матера. Заселение в уникальный отель в пещерах Сасси. Вечерний визит в иммерсивный музей Casa Noha с 3D-проекциями на каменных стенах.",
-      navigatorQuest: `<strong>Экологическая & Мультимедийная миссия:</strong><br>
-        • <strong>Алексей (11 лет):</strong> С помощью датчика солености или вкусового теста определяет разницу между поверхностным пресным слоем воды и нижним морским в бухте Портосельваджо.<br>
-        • <strong>Арон (13 лет):</strong> Объясняет, почему в Casa Noha в Матере стены, полы и потолки используются как единый проекционный экран для воссоздания 9000-летней истории города.<br>
-        • <strong>Адриан (15 лет):</strong> Объясняет закон Архимеда и разность плотностей пресной воды ($1000\\text{ кг/м}^3$) и морской воды ($1025\\text{ кг/м}^3$) для обоснования феномена расслоения воды в бухте.`,
+      imageUrl: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Пещерный древний город Sassi di Matera в Базиликате",
+      objective: "Утренний поход через сосновый бор Портосельваджо к лагуне с прохладными ключами. Длительный живописный переезд на Базу 3 в высокогорную Матеру (Базиликата). Заселение в пещерный отель в Сасси и иммерсивный визит в Casa Noha.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Замерить температуру морской воды у поверхности лагуны Портосельваджо и на глубине 1 метра." },
+        { name: "Арон (13 лет)", task: "Объяснить разницу плотностей пресной холодной воды ключей и соленой морской воды." },
+        { name: "Адриан (15 лет)", task: "Оценить естественную систему террасной вентиляции и накопления прохлады в пещерах Sassi." }
+      ],
       climateShelter: "Густая сосновая тень Портосельваджо утром, кондиционируемые пещерные залы Casa Noha во второй половине дня и прохладные каменные номера отеля в Сасси.",
       gastronomy: "Хрустящие сушеные перцы Круски (Peperoni Cruschi) — знаменитый гастрономический символ региона Базиликата.",
-      weather: "+33°C 🌤️ Освежающий ветер у моря, прохлада в горах Базиликаты",
+      weather: "+31°C ☀️ Ясно и солнечно, идеальные условия для пещер Матеры",
       logistics: {
         distance: "~56 км до Портосельваджо, затем ~185 км до Матеры",
-        time: "~2.5 часа суммарно за рулем",
-        ztl: "В Матере строгая ZTL в Сасси!",
+        time: "~2.5 часа",
+        ztl: "Очень строгий ZTL в Sassi",
         ztlClass: "ztl-yes",
-        parking: "Оставьте автомобиль на парковке Parcheggio Saraceno и воспользуйтесь трансферным шаттлом до отеля."
+        parking: "Оставьте авто на парковке Parcheggio Nicoletti за пределами Сасси. Везд в пещерный город запрещен!"
       },
-      tip: "⚠️ Внимание штурмана: Знаменитый испытательный трек Porsche в Нардо (Nardò Technical Center) — строго закрытый военный и коммерческий объект. Въезд туристам запрещен из соображений безопасности!"
+      tip: "⚠️ Внимание команды! Трек Porsche в Нардо (Nardò Technical Center) — строго засекреченный объект, въезд туда туристам закрыт."
     },
     {
       id: 31,
       date: "31 июля",
       dayOfWeek: "Пятница",
-      title: "Золотой Финал & Подземные Воды",
-      route: "Матера → Акуарика → Бари (Вылет)",
+      title: "Золотой Финал: Цистерна Palombaro & Festa del Grano",
+      route: "Матера → Акуарика → Бари",
       progress: 100,
       badge: "День 11",
+      isToday: false,
       colorGradient: "linear-gradient(135deg, #f39c12 0%, #d35400 100%)",
-      imageUrl: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=800&q=80",
-      imageCaption: "Золотые пшеничные поля Саленто и исторический праздник Festa del Grano в усадьбе Celsorizzo",
-      objective: "[База 3: Матера] Утренний спуск в монументальный Паломбаро Лунго — колоссальную подземную цистерну XVI века под центральной площадью Матеры. Дневной переезд в Акуарика-дель-Капо на Festa del Grano в усадьбе Celsorizzo (исторический обмолот пшеницы волами). Вечерний трансфер в аэропорт Бари для вылета домой.",
-      navigatorQuest: `<strong>Биохимическая & Гидротехническая миссия финала:</strong><br>
-        • <strong>Алексей (11 лет):</strong> Изучает 16-метровые стены Паломбаро Лунго и принципы работы водонепроницаемой штукатурки с битой терракотой (cocciopesto).<br>
-        • <strong>Арон (13 лет):</strong> Исследует на празднике Festa del Grano процесс повторного размачивания Фризедды и рассчитывает коэффициент поглощения воды сухим хлебом.<br>
-        • <strong>Адриан (15 лет):</strong> Объясняет роль белков глиадина и глютенина в формировании клейковины (глютена) пшеницы Grano Duro, сохраняющей упругость пасты в состоянии «al dente» при варке.`,
+      imageUrl: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80",
+      imageCaption: "Гигантская подземная цистерна Palombaro Lungo и золотые пшеничные поля",
+      objective: "Спуск в уникальную подземную цистерну Palombaro Lungo в Матере (5 миллионов литров воды, выдолбленные в туфе). Выезд на кульминационный праздник Festa del Grano в усадьбе Celsorizzo (Акуарика) с реконструкцией обмолота зерна волами.",
+      quests: [
+        { name: "Алексей (11 лет)", task: "Посчитать высоту сводов цистерны Palombaro Lungo и найти следы древнего состава водонепроницаемой штукатурки cocciopesto." },
+        { name: "Арон (13 лет)", task: "Изучить белок глютен в твердых сортах пшеницы Grano Duro и проверить его эластичность на мастер-классе." },
+        { name: "Адриан (15 лет)", task: "Рассчитать гидростатическое давление на дно 16-метровой цистерны Palombaro при полном заполнении." }
+      ],
       climateShelter: "Подземная цистерна Паломбаро Лунго — это 5 миллионов литров былой воды и естественная подземная прохлада посреди знойного дня.",
       gastronomy: "Фризедда, размоченная в чистой воде, щедро заправленная спелыми томатами, морской солью и золотистым оливковым маслом Саленто.",
-      weather: "+35°C ☀️ Солнечно, праздничная теплая ночь",
+      weather: "+32°C ☀️ Солнечно, жаркий финал экспедиции",
       logistics: {
         distance: "~210 км до Акуарики, затем ~100 км до Бари",
-        time: "~3 часа общего времени в пути",
-        ztl: "Без ZTL у массерии Celsorizzo",
+        time: "~2 часа 20 минут",
+        ztl: "Без ZTL у массерии",
         ztlClass: "ztl-no",
-        parking: "Грунтовая парковочная площадка непосредственно у ворот Masseria Celsorizzo."
+        parking: "Грунтовая парковка у усадьбы Masseria Celsorizzo."
       },
-      tip: "Поздравьте штурманский состав с успешным завершением 100% миссий и вручите Алексею, Аарону и Адриану памятные сувениры из папье-маше, сделанные в Лечче!"
+      tip: "Ура! Экспедиция завершена на 100%! Вручите Алексею, Арону и Адриану памятные медали и дипломы юных исследователей Саленто!"
     }
   ];
 
-  let currentActiveIndex = 0;
+  let currentActiveIndex = 3; // По умолчанию день 4 (24 июля - СЕГОДНЯ)
   let touchStartX = 0;
   let touchEndX = 0;
   let touchStartY = 0;
@@ -1075,7 +1105,10 @@
       button.onclick = () => selectDay(index);
 
       button.innerHTML = `
-        <span class="day-meta">${day.date}</span>
+        <span class="day-meta">
+          ${day.date}
+          ${day.isToday ? '<span class="today-tag">СЕГОДНЯ</span>' : ''}
+        </span>
         <span class="day-title">${day.title}</span>
         <span class="day-route">${day.dayOfWeek}</span>
       `;
@@ -1088,7 +1121,6 @@
 
     document.getElementById(`btn-day-${currentActiveIndex}`).classList.remove('active');
     currentActiveIndex = index;
-
     const activeBtn = document.getElementById(`btn-day-${currentActiveIndex}`);
     activeBtn.classList.add('active');
 
@@ -1102,22 +1134,32 @@
     setTimeout(() => {
       const data = daysData[index];
 
-      // Текстовые блоки
       document.getElementById('dayBadge').innerText = data.badge;
       document.getElementById('dayTitle').innerText = data.title;
       document.getElementById('dayRoute').innerText = data.route;
       document.getElementById('dayObjective').innerText = data.objective;
-      document.getElementById('dayQuest').innerHTML = data.navigatorQuest;
       document.getElementById('dayShelter').innerText = data.climateShelter;
       document.getElementById('dayGastronomy').innerText = data.gastronomy;
       document.getElementById('dayTip').innerText = data.tip;
 
-      // Изменение обложки дня
+      // Рендер фото дня
       const imgEl = document.getElementById('dayImage');
       imgEl.src = data.imageUrl;
       document.getElementById('dayImageCaption').innerText = data.imageCaption;
 
-      // Изменение градиента баннера
+      // Рендер индивидуальных квестов
+      const questContainer = document.getElementById('dayQuestContainer');
+      questContainer.innerHTML = '';
+      data.quests.forEach(q => {
+        const item = document.createElement('div');
+        item.className = 'quest-item';
+        item.innerHTML = `
+          <div class="quest-role">👤 ${q.name}</div>
+          <p style="font-size: 13.5px; color: var(--text-dark);">${q.task}</p>
+        `;
+        questContainer.appendChild(item);
+      });
+
       document.getElementById('dayBanner').style.background = data.colorGradient;
 
       // Обновление логистики и погоды
@@ -1131,7 +1173,6 @@
 
       document.getElementById('logParking').innerText = data.logistics.parking;
 
-      // Обновление прогресс-бара
       updateProgress(data.progress);
 
       mainContent.style.opacity = 1;
@@ -1171,7 +1212,6 @@
     const deltaY = touchEndY - touchStartY;
     const threshold = 60;
 
-    // Защита от ложных срабатываний во время вертикальной прокрутки
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > threshold) {
       if (deltaX < 0) {
         if (currentActiveIndex < daysData.length - 1) {
@@ -1187,7 +1227,7 @@
 
   window.onload = function() {
     initDaysMenu();
-    selectDay(0);
+    selectDay(3); // По умолчанию открываем 24 июля (СЕГОДНЯ)
     setupSwipeGestures();
   };
 </script>
