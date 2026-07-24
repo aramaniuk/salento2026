@@ -352,6 +352,12 @@
     }
 
     .quest-role {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
     /* Оформление квеста штурмана */
     .quest-box {
       background: linear-gradient(135deg, #fffcf6 0%, #fff7eb 100%);
@@ -535,11 +541,11 @@
 
     @media (max-width: 1024px) {
       .dashboard-layout {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto 1fr;
+        display: flex;
+        flex-direction: column;
         height: auto;
         overflow: visible;
-        padding: 14px;
+        padding: 12px;
         gap: 14px;
       }
 
@@ -563,6 +569,7 @@
         border-radius: 12px;
         -webkit-overflow-scrolling: touch;
         scroll-snap-type: x mandatory;
+        width: 100%;
       }
 
       .sidebar-left h3 {
@@ -579,8 +586,13 @@
         font-size: 12px;
       }
 
+      .main-content {
+        padding-right: 0;
+      }
+
       .sidebar-right {
         order: 3;
+        width: 100%;
       }
     }
 
